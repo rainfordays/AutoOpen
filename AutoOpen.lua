@@ -45,8 +45,15 @@ function events:BAG_UPDATE()
             SetCVar("autoLootDefault", 0)
             UseContainerItem(bag, slot)
             SetCVar("autoLootDefault", 1)
+
+          elseif autolootDefault then
+              UseContainerItem(bag, slot)
+
           else
+            SetCVar("autoLootDefault", 1)
             UseContainerItem(bag, slot)
+            SetCVar("autoLootDefault", autolootDefault)
+
           end
         end
       end

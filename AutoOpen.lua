@@ -1,57 +1,52 @@
-local _, core = ...;
+local _, A = ...;
 
-core.loaded = false
---[[
-
-  AutoOpenTooltip = CreateFrame("GAMETOOLTIP", "AutoOpenTooltip",nil,"GameTooltipTemplate")
-  AutoOpenTooltip:SetOwner(WorldFrame, "ANCHOR_NONE")
-]]
+A.loaded = false
 
 
-function core:Print(...)
+function A:Print(...)
   DEFAULT_CHAT_FRAME:AddMessage(tostringall(...))
 end
 
 
-local events = CreateFrame("Frame")
-events:RegisterEvent("PLAYER_LOGIN")
-events:RegisterEvent("ADDON_LOADED")
-events:RegisterEvent("BAG_UPDATE")
-events:SetScript("OnEvent", function(self, event, ...)
+local E = CreateFrame("Frame")
+E:RegisterEvent("PLAYER_LOGIN")
+E:RegisterEvent("ADDON_LOADED")
+E:RegisterEvent("BAG_UPDATE")
+E:SetScript("OnEvent", function(self, event, ...)
   return self[event] and self[event](self, ...)
 end)
 
-function events:PLAYER_LOGIN()
-  core.loaded = true
-  core:Print("AutoOpen loaded.")
+function E:PLAYER_LOGIN()
+  A.loaded = true
+  A:Print("AutoOpen loaded.")
 end
 
 
-function events:ADDON_LOADED(name)
+function E:ADDON_LOADED(name)
   if name ~= "AutoOpen" then return end
 end
 
-function events:BAG_UPDATE()
-  if not core.loaded then return end
+function E:BAG_UPDATE()
+  if not A.loaded then return end
 
-  for bag = 0, NUM_BAG_SLOTS do
-    for slot = 1, GetContainerNumSlots(bag) do
-      local _, _, _, _, _, lootable, itemLink = GetContainerItemInfo(bag, slot)
+  for B = 0, NUM_BAG_SLOTS do
+    for S = 1, GetContainerNumSlots(B) do
+      local _, _, _, _, _, lootable, itemLink = GetContainerItemInfo(B, S)
 
       if itemLink and not string.find(itemLink, "Lockbox") and not string.find(itemLink, "Junkbox") then
         if lootable then
           local autolootDefault = GetCVar("autoLootDefault")
           if IsModifiedClick(AUTOLOOTTOGGLE) and autolootDefault then
             SetCVar("autoLootDefault", 0)
-            UseContainerItem(bag, slot)
+            UseContainerItem(B, S)
             SetCVar("autoLootDefault", 1)
 
           elseif autolootDefault then
-            UseContainerItem(bag, slot)
+            UseContainerItem(B, S)
 
           else
             SetCVar("autoLootDefault", 1)
-            UseContainerItem(bag, slot)
+            UseContainerItem(B, S)
             SetCVar("autoLootDefault", autolootDefault)
 
           end

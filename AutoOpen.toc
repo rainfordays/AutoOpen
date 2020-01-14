@@ -2,7 +2,7 @@
 ## Title: AutoOpen
 ## Author: RainForDays
 ## Notes: Auto loot openable items when you loot them.
-## Version: 1.0.0
+## Version: 1.0
 ## DefaultState: enabled
 
 

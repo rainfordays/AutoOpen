@@ -29,7 +29,7 @@ end
 
 function E:BAG_UPDATE()
   if not A.loaded then return end
-  if UnitCastingInfo("player") then return end
+  if CastingInfo() then return end
 
   for B = 0, NUM_BAG_SLOTS do
     for S = 1, GetContainerNumSlots(B) do

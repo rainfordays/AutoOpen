@@ -1,5 +1,4 @@
 local _, A = ...;
-
 A.loaded = false
 
 
@@ -17,17 +16,20 @@ E:SetScript("OnEvent", function(self, event, ...)
 end)
 
 function E:PLAYER_LOGIN()
-  A.loaded = true
-  A:Print("AutoOpen loaded.")
+  if A.loaded then
+    A:Print("AutoOpen loaded.")
+  end
 end
 
 
 function E:ADDON_LOADED(name)
   if name ~= "AutoOpen" then return end
+  A.loaded = true
 end
 
 function E:BAG_UPDATE()
   if not A.loaded then return end
+  if UnitCastingInfo("player") then return end
 
   for B = 0, NUM_BAG_SLOTS do
     for S = 1, GetContainerNumSlots(B) do

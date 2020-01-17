@@ -1,2 +1,5 @@
+1.1
+- Will no longer cancel spellcasts
+
 1.0
 - Initial release

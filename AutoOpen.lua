@@ -27,31 +27,31 @@ function E:ADDON_LOADED(name)
   A.loaded = true
 end
 
-function E:BAG_UPDATE()
+
+function E:BAG_UPDATE(B)
   if not A.loaded then return end
   if CastingInfo() then return end
 
-  for B = 0, NUM_BAG_SLOTS do
-    for S = 1, GetContainerNumSlots(B) do
-      local _, _, _, _, _, lootable, itemLink = GetContainerItemInfo(B, S)
 
-      if itemLink and not string.find(itemLink, "Lockbox") and not string.find(itemLink, "Junkbox") then
-        if lootable then
-          local autolootDefault = GetCVar("autoLootDefault")
-          if IsModifiedClick(AUTOLOOTTOGGLE) and autolootDefault then
-            SetCVar("autoLootDefault", 0)
-            UseContainerItem(B, S)
-            SetCVar("autoLootDefault", 1)
+  for S = 1, GetContainerNumSlots(B) do
+    local _, _, _, _, _, lootable, itemLink = GetContainerItemInfo(B, S)
 
-          elseif autolootDefault then
-            UseContainerItem(B, S)
+    if itemLink and not string.find(itemLink, "Lockbox") and not string.find(itemLink, "Junkbox") then
+      if lootable then
+        local autolootDefault = GetCVar("autoLootDefault")
+        if IsModifiedClick(AUTOLOOTTOGGLE) and autolootDefault then
+          SetCVar("autoLootDefault", 0)
+          UseContainerItem(B, S)
+          SetCVar("autoLootDefault", 1)
 
-          else
-            SetCVar("autoLootDefault", 1)
-            UseContainerItem(B, S)
-            SetCVar("autoLootDefault", autolootDefault)
+        elseif autolootDefault then
+          UseContainerItem(B, S)
 
-          end
+        else
+          SetCVar("autoLootDefault", 1)
+          UseContainerItem(B, S)
+          SetCVar("autoLootDefault", autolootDefault)
+
         end
       end
     end

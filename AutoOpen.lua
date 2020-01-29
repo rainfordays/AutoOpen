@@ -34,10 +34,10 @@ function E:BAG_UPDATE(B)
 
 
   for S = 1, GetContainerNumSlots(B) do
-    local _, _, _, _, _, lootable, itemLink = GetContainerItemInfo(B, S)
+    local _, _, locked, _, _, lootable, itemLink = GetContainerItemInfo(B, S)
 
     if itemLink and not string.find(itemLink, "Lockbox") and not string.find(itemLink, "Junkbox") then
-      if lootable then
+      if lootable and not locked then
         local autolootDefault = GetCVar("autoLootDefault")
         if IsModifiedClick(AUTOLOOTTOGGLE) and autolootDefault then
           SetCVar("autoLootDefault", 0)

@@ -53,7 +53,7 @@ function E:BAG_UPDATE(B)
           UseContainerItem(B, S)
           SetCVar("autoLootDefault", 0)
         end
-
+        return
       end
     end
   end

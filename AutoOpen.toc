@@ -4,6 +4,7 @@
 ## Notes: Auto loot openable items when you loot them.
 ## Version: 1.2
 ## DefaultState: enabled
+## SavedVariablesPerCharacter: AutoOpenBlackList
 
 
 AutoOpen.lua

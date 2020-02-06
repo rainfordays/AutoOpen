@@ -1,6 +1,8 @@
 local _, A = ...;
 A.loaded = false
 A.merchantFrameOpen = false
+local BL = {}
+
 
 function A:Print(...)
   DEFAULT_CHAT_FRAME:AddMessage(tostringall(...))
@@ -29,6 +31,26 @@ end
 function E:ADDON_LOADED(name)
   if name ~= "AutoOpen" then return end
   A.loaded = true
+  BL = AutoOpenBlackList
+  if not BL then BL = {} end
+
+  SLASH_AUTOOPEN1= "/autoopen";
+  SLASH_AUTOOPEN2= "/ao";
+  SlashCmdList.AUTOOPEN = function(msg)
+    A:SlashCommand(msg)
+  end
+end
+
+function core:SlashCommand(args)
+  local command, rest = strsplit(" ", args, 2)
+  command = command:lower()
+
+  if command == "bl" then
+    local itemName = GetItemInfo(rest)
+    if itemName then
+      BL[itemName] = true
+    end
+  end
 end
 
 --[[
@@ -53,8 +75,9 @@ function E:BAG_UPDATE(B)
 
   for S = 1, GetContainerNumSlots(B) do
     local _, _, locked, _, _, lootable, itemLink = GetContainerItemInfo(B, S)
+    local itemName = GetItemInfo(itemLink)
 
-    if itemLink and not string.find(itemLink, "Lockbox") and not string.find(itemLink, "Junkbox") then -- make sure its not a lockbox
+    if itemLink and not string.find(itemLink, "Lockbox") and not string.find(itemLink, "Junkbox") and not BL[itemName] then -- make sure its not a lockbox
       if lootable and not locked then -- item is lootable and not locked by server
         local autolootDefault = GetCVar("autoLootDefault")
 

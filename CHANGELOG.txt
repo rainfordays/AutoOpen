@@ -1,3 +1,6 @@
+1.2
+- Will no longer execute when merchant frame is open (to prevent selling stuff)
+
 1.1
 - Will no longer cancel spellcasts
 

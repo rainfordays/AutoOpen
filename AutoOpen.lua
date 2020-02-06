@@ -1,6 +1,6 @@
 local _, A = ...;
 A.loaded = false
-
+A.merchantFrameOpen = false
 
 function A:Print(...)
   DEFAULT_CHAT_FRAME:AddMessage(tostringall(...))
@@ -11,24 +11,42 @@ local E = CreateFrame("Frame")
 E:RegisterEvent("PLAYER_LOGIN")
 E:RegisterEvent("ADDON_LOADED")
 E:RegisterEvent("BAG_UPDATE")
+E:RegisterEvent("MERCHANT_SHOW")
+E:RegisterEvent("MERCHANT_CLOSED")
 E:SetScript("OnEvent", function(self, event, ...)
   return self[event] and self[event](self, ...)
 end)
 
+--[[
+  ADDON LOADING
+]]
 function E:PLAYER_LOGIN()
   if A.loaded then
     A:Print("AutoOpen loaded.")
   end
 end
 
-
 function E:ADDON_LOADED(name)
   if name ~= "AutoOpen" then return end
   A.loaded = true
 end
 
+--[[
+  MERCHANT
+]]
+function E:MERCHANT_SHOW()
+  A.merchantFrameOpen = true
+end
 
+function E:MERCHANT_CLOSED()
+  A.merchantFrameOpen = false
+end
+
+--[[
+  BAG UPDATE & CORE FUNCTIONALITY
+]]
 function E:BAG_UPDATE(B)
+  if A.merchantFrameOpen then return end
   if not A.loaded then return end
   if CastingInfo() then return end
 

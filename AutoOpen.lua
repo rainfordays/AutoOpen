@@ -43,7 +43,7 @@ function E:ADDON_LOADED(name)
   end
 end
 
-function core:SlashCommand(args)
+function A:SlashCommand(args)
   local command, rest = strsplit(" ", args, 2)
   command = command:lower()
 

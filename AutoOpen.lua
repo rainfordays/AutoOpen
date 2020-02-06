@@ -1,6 +1,6 @@
 local _, A = ...;
 A.loaded = false
-A.merchantFrameOpen = false
+A.stopAddon = false
 local BL = {}
 
 
@@ -15,6 +15,8 @@ E:RegisterEvent("ADDON_LOADED")
 E:RegisterEvent("BAG_UPDATE")
 E:RegisterEvent("MERCHANT_SHOW")
 E:RegisterEvent("MERCHANT_CLOSED")
+E:RegisterEvent("BANKFRAME_OPENED")
+E:RegisterEvent("BANKFRAME_CLOSED")
 E:SetScript("OnEvent", function(self, event, ...)
   return self[event] and self[event](self, ...)
 end)
@@ -58,18 +60,29 @@ end
   MERCHANT
 ]]
 function E:MERCHANT_SHOW()
-  A.merchantFrameOpen = true
+  A.stopAddon = true
 end
 
 function E:MERCHANT_CLOSED()
-  A.merchantFrameOpen = false
+  A.stopAddon = false
+end
+
+--[[
+  BANK
+]]
+function E:BANKFRAME_OPENED()
+  A.stopAddon = true
+end
+
+function E:BANKFRAME_CLOSED()
+  A.stopAddon = false
 end
 
 --[[
   BAG UPDATE & CORE FUNCTIONALITY
 ]]
 function E:BAG_UPDATE(B)
-  if A.merchantFrameOpen then return end
+  if A.stopAddon then return end
   if not A.loaded then return end
   if CastingInfo() then return end
 

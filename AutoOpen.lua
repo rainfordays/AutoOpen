@@ -51,6 +51,7 @@ function core:SlashCommand(args)
       BL[itemName] = true
     end
   end
+  A:Print(itemName .. " added to blacklist.")
 end
 
 --[[

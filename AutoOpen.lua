@@ -89,7 +89,7 @@ function E:BAG_UPDATE(B)
 
   for S = 1, GetContainerNumSlots(B) do
     local _, _, locked, _, _, lootable, itemLink = GetContainerItemInfo(B, S)
-    local itemName = GetItemInfo(itemLink)
+    local itemName = itemLink and GetItemInfo(itemLink) or nil
 
     if itemLink and not string.find(itemLink, "Lockbox") and not string.find(itemLink, "Junkbox") and not BL[itemName] then -- make sure its not a lockbox
       if lootable and not locked then -- item is lootable and not locked by server

@@ -47,7 +47,7 @@ function A:SlashCommand(args)
   local command, rest = strsplit(" ", args, 2)
   command = command:lower()
 
-  if command == "bl" then
+  if command == "bl" or command == "blacklist" then
     local itemName = GetItemInfo(rest)
     if itemName then
       BL[itemName] = true
@@ -91,7 +91,7 @@ function E:BAG_UPDATE(B)
     local _, _, locked, _, _, lootable, itemLink = GetContainerItemInfo(B, S)
     local itemName = itemLink and GetItemInfo(itemLink) or nil
 
-    if itemLink and not string.find(itemLink, "Lockbox") and not string.find(itemLink, "Junkbox") and not BL[itemName] then -- make sure its not a lockbox
+    if itemLink and not string.find(itemLink:lower(), "lock") and not string.find(itemLink, "Junkbox") and not BL[itemName] then -- make sure its not a lockbox
       if lootable and not locked then -- item is lootable and not locked by server
         local autolootDefault = GetCVar("autoLootDefault")
 

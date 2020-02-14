@@ -49,11 +49,16 @@ function A:SlashCommand(args)
 
   if command == "bl" or command == "blacklist" then
     local itemName = GetItemInfo(rest)
-    if itemName then
+
+    if BL[itemName] then
+      BL[itemName] = nil
+      A:Print(itemName .. " removed from blacklist.")
+    else
       BL[itemName] = true
+      A:Print(itemName .. " added to blacklist.")
     end
   end
-  A:Print(itemName .. " added to blacklist.")
+  
 end
 
 --[[

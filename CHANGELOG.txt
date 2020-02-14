@@ -1,3 +1,8 @@
+1.5.2
+- Added /ao blacklist [itemlink] instead of just /ao bl [itemlink]
+  - Blacklisting an item already in the list will remove it from the list
+  - Now gives some text to show what was done
+
 1.5
 - Fixing lua errors introduced with blacklist
 

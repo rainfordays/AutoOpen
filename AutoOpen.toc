@@ -6,5 +6,4 @@
 ## DefaultState: enabled
 ## SavedVariablesPerCharacter: AutoOpenBlackList
 
-
 AutoOpen.lua

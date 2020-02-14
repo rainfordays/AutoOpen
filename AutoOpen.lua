@@ -33,8 +33,9 @@ end
 function E:ADDON_LOADED(name)
   if name ~= "AutoOpen" then return end
   A.loaded = true
-  BL = AutoOpenBlackList
-  if not BL then BL = {} end
+  if not AutoOpenBlackList then AutoOpenBlackList = {} end
+
+  AOBL = AutoOpenBlackList
 
   SLASH_AUTOOPEN1= "/autoopen";
   SLASH_AUTOOPEN2= "/ao";
@@ -50,11 +51,11 @@ function A:SlashCommand(args)
   if command == "bl" or command == "blacklist" then
     local itemName = GetItemInfo(rest)
 
-    if BL[itemName] then
-      BL[itemName] = nil
+    if AOBL[itemName] then
+      AOBL[itemName] = nil
       A:Print(itemName .. " removed from blacklist.")
     else
-      BL[itemName] = true
+      AOBL[itemName] = true
       A:Print(itemName .. " added to blacklist.")
     end
   end
@@ -96,7 +97,7 @@ function E:BAG_UPDATE(B)
     local _, _, locked, _, _, lootable, itemLink = GetContainerItemInfo(B, S)
     local itemName = itemLink and GetItemInfo(itemLink) or nil
 
-    if itemLink and not string.find(itemLink:lower(), "lock") and not string.find(itemLink, "Junkbox") and not BL[itemName] then -- make sure its not a lockbox
+    if itemLink and not string.find(itemLink:lower(), "lock") and not string.find(itemLink, "Junkbox") and not AOBL[itemName] then -- make sure its not a lockbox
       if lootable and not locked then -- item is lootable and not locked by server
         local autolootDefault = GetCVar("autoLootDefault")
 

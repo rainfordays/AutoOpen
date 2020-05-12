@@ -2,17 +2,19 @@ local _, A = ...;
 A.loaded = false
 A.stopAddon = false
 local BL = {}
+A.bag = 0
 
 
 function A:Print(...)
-  DEFAULT_CHAT_FRAME:AddMessage(tostringall(...))
+  DEFAULT_CHAT_FRAME:AddMessage(A.addonName .. "- " .. tostringall(...))
+end
 end
 
 
 local E = CreateFrame("Frame")
 E:RegisterEvent("PLAYER_LOGIN")
 E:RegisterEvent("ADDON_LOADED")
-E:RegisterEvent("BAG_UPDATE")
+E:RegisterEvent("BAG_UPDATE_DELAYED")
 E:RegisterEvent("MERCHANT_SHOW")
 E:RegisterEvent("MERCHANT_CLOSED")
 E:RegisterEvent("BANKFRAME_OPENED")
@@ -87,34 +89,36 @@ end
 --[[
   BAG UPDATE & CORE FUNCTIONALITY
 ]]
-function E:BAG_UPDATE(B)
+function E:BAG_UPDATE_DELAYED()
   if A.stopAddon then return end
   if not A.loaded then return end
   if CastingInfo() then return end
 
 
-  for S = 1, GetContainerNumSlots(B) do
-    local _, _, locked, _, _, lootable, itemLink = GetContainerItemInfo(B, S)
-    local itemName = itemLink and GetItemInfo(itemLink) or nil
+  for B = 0, NUM_BAG_SLOTS do
+    for S = 1, GetContainerNumSlots(B) do
+      local _, _, locked, _, _, lootable, itemLink = GetContainerItemInfo(B, S)
+      local itemName = itemLink and GetItemInfo(itemLink) or nil
 
-    if itemLink and not string.find(itemLink:lower(), "lock") and not string.find(itemLink, "Junkbox") and not AOBL[itemName] then -- make sure its not a lockbox
-      if lootable and not locked then -- item is lootable and not locked by server
-        local autolootDefault = GetCVar("autoLootDefault")
+      if itemLink and not string.find(itemLink:lower(), "lock") and not string.find(itemLink, "Junkbox") and not AOBL[itemName] then -- make sure its not a lockbox
+        if lootable and not locked then -- item is lootable and not locked by server
+          local autolootDefault = GetCVar("autoLootDefault")
 
-        if autolootDefault then -- autolooting
-          if IsModifiedClick(AUTOLOOTTOGGLE) then -- currently holding autoloot mod key
-            SetCVar("autoLootDefault", 0) -- swap the autoloot behaviour so it autoloots even with mod key held
+          if autolootDefault then -- autolooting
+            if IsModifiedClick(AUTOLOOTTOGGLE) then -- currently holding autoloot mod key
+              SetCVar("autoLootDefault", 0) -- swap the autoloot behaviour so it autoloots even with mod key held
+              UseContainerItem(B, S)
+              SetCVar("autoLootDefault", 1) -- swap back
+            else -- not holding autoloot mod key
+              UseContainerItem(B, S)
+            end
+          else -- not autolooting
+            SetCVar("autoLootDefault", 1)
             UseContainerItem(B, S)
-            SetCVar("autoLootDefault", 1) -- swap back
-          else -- not holding autoloot mod key
-            UseContainerItem(B, S)
+            SetCVar("autoLootDefault", 0)
           end
-        else -- not autolooting
-          SetCVar("autoLootDefault", 1)
-          UseContainerItem(B, S)
-          SetCVar("autoLootDefault", 0)
+          return
         end
-        return
       end
     end
   end

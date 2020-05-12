@@ -8,7 +8,6 @@ A.bag = 0
 function A:Print(...)
   DEFAULT_CHAT_FRAME:AddMessage(A.addonName .. "- " .. tostringall(...))
 end
-end
 
 
 local E = CreateFrame("Frame")

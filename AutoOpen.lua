@@ -9,6 +9,9 @@ function A:Print(...)
   DEFAULT_CHAT_FRAME:AddMessage(A.addonName .. "- " .. tostringall(...))
 end
 
+A.slashPrefix = "|cff8d63ff/autoopen|r "
+A.addonName = "|cff8d63ffAutoOpen|r "
+
 
 local E = CreateFrame("Frame")
 E:RegisterEvent("PLAYER_LOGIN")
@@ -59,6 +62,11 @@ function A:SlashCommand(args)
       AOBL[itemName] = true
       A:Print(itemName .. " added to blacklist.")
     end
+  
+    
+  else
+    A:Print("Commands")
+    A:Print("/autoopen bl [itemName] - Add [itemName] to blacklist.")
   end
   
 end
@@ -99,7 +107,7 @@ function E:BAG_UPDATE_DELAYED()
       local _, _, locked, _, _, lootable, itemLink = GetContainerItemInfo(B, S)
       local itemName = itemLink and GetItemInfo(itemLink) or nil
 
-      if itemLink and not string.find(itemLink:lower(), "lock") and not string.find(itemLink, "Junkbox") and not AOBL[itemName] then -- make sure its not a lockbox
+      if itemLink and not string.find(itemLink:lower(), "lockbox") and not string.find(itemLink, "Junkbox") and not AOBL[itemName] then -- make sure its not a lockbox
         if lootable and not locked then -- item is lootable and not locked by server
           local autolootDefault = GetCVar("autoLootDefault")
 

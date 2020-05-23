@@ -31,7 +31,7 @@ end)
 ]]
 function E:PLAYER_ENTERING_WORLD(login, reload)
   if A.loaded and (login or reload) and AO_loginMessage then
-    print(A.addonName .." loaded.")
+    print(A.addonName .."loaded")
   end
 end
 
@@ -40,7 +40,7 @@ function E:ADDON_LOADED(name)
 
   A.loaded = true
   AutoOpenBlackList = AutoOpenBlackList or {}
-  AO_loginMessage = AO_loginMessage or true
+  AO_loginMessage = AO_loginMessage ~= nil and AO_loginMessage or true
 
   AOBL = AutoOpenBlackList
 

@@ -1,3 +1,6 @@
+1.6
+- Login message setting added
+
 1.5.2
 - Added /ao blacklist [itemlink] instead of just /ao bl [itemlink]
   - Blacklisting an item already in the list will remove it from the list

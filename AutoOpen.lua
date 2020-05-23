@@ -15,7 +15,7 @@ A.addonName = "|cff8d63ffAutoOpen|r "
 
 
 local E = CreateFrame("Frame")
-E:RegisterEvent("PLAYER_LOGIN")
+E:RegisterEvent("PLAYER_ENTERING_WORLD")
 E:RegisterEvent("ADDON_LOADED")
 E:RegisterEvent("BAG_UPDATE")
 E:RegisterEvent("MERCHANT_SHOW")
@@ -29,16 +29,18 @@ end)
 --[[
   ADDON LOADING
 ]]
-function E:PLAYER_LOGIN()
-  if A.loaded then
-    --A:Print("AutoOpen loaded.")
+function E:PLAYER_ENTERING_WORLD(login, reload)
+  if A.loaded and (login or reload) and AO_loginMessage then
+    print(A.addonName .." loaded.")
   end
 end
 
 function E:ADDON_LOADED(name)
   if name ~= "AutoOpen" then return end
+
   A.loaded = true
-  if not AutoOpenBlackList then AutoOpenBlackList = {} end
+  AutoOpenBlackList = AutoOpenBlackList or {}
+  AO_loginMessage = AO_loginMessage or true
 
   AOBL = AutoOpenBlackList
 
@@ -64,10 +66,14 @@ function A:SlashCommand(args)
       A:Print(itemName .. " added to blacklist.")
     end
   
-    
+  elseif command == "login" then
+    AO_loginMessage = not AO_loginMessage
+    if AO_loginMessage then A:Print("Login message enabled") else A:Print("Login message disabled") end
+
   else
     A:Print("Commands")
     A:Print("/autoopen bl [itemName] - Add [itemName] to blacklist.")
+    A:Print("/autoopen login - Toggle login message.")
   end
   
 end

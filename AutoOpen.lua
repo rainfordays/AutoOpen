@@ -40,7 +40,7 @@ function E:ADDON_LOADED(name)
 
   A.loaded = true
   AutoOpenBlackList = AutoOpenBlackList or {}
-  AO_loginMessage = AO_loginMessage ~= nil and AO_loginMessage or true
+  AO_loginMessage = AO_loginMessage or false
 
   AOBL = AutoOpenBlackList
 

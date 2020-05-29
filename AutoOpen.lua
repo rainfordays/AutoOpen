@@ -108,6 +108,11 @@ end
   BAG UPDATE & CORE FUNCTIONALITY
 ]]
 
+function A:IsQuestItem(itemLink)
+  local id, subid = select(12, GetItemInfo(itemLink))
+  return (id == LE_ITEM_CLASS_QUESTITEM or subid == LE_ITEM_CLASS_QUESTITEM)
+end
+
 function E:BAG_UPDATE(B)
   if A.stopAddon then return end
   if not A.loaded then return end
@@ -122,10 +127,9 @@ function E:BAG_UPDATE(B)
   --for B = 0, NUM_BAG_SLOTS do
     for S = 1, GetContainerNumSlots(B) do
       local _, _, locked, _, _, lootable, itemLink = GetContainerItemInfo(B, S)
-      local isQuestItem = GetContainerItemQuestInfo(B, S)
       local itemName = itemLink and string.match(itemLink, "%[(.*)%]") or nil
 
-      if lootable and not locked and not string.find(itemLink:lower(), "lockbox") and not string.find(itemLink, "Junkbox") and not AOBL[itemName] and (not isQuestItem and AutoOpenQuestItems) then -- make sure its not a lockbox
+      if lootable and not locked and not string.find(itemLink:lower(), "lockbox") and not string.find(itemLink, "Junkbox") and not AOBL[itemName] and (not A:IsQuestItem(itemLink) and AutoOpenQuestItems) then -- make sure its not a lockbox
         local autolootDefault = GetCVar("autoLootDefault")
 
         if autolootDefault then -- autolooting

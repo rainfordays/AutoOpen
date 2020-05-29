@@ -41,6 +41,7 @@ function E:ADDON_LOADED(name)
   A.loaded = true
   AutoOpenBlackList = AutoOpenBlackList or {}
   AO_loginMessage = AO_loginMessage or false
+  AutoOpenQuestItems = false
 
   AOBL = AutoOpenBlackList
 
@@ -70,12 +71,15 @@ function A:SlashCommand(args)
     AO_loginMessage = not AO_loginMessage
     if AO_loginMessage then A:Print("Login message enabled") else A:Print("Login message disabled") end
 
+  elseif command == "quest" then
+    AutoOpenQuestItems = not AutoOpenQuestItems
+
   else
     A:Print("Commands")
     A:Print("/autoopen bl [itemName] - Add [itemName] to blacklist.")
     A:Print("/autoopen login - Toggle login message.")
+    A:Print("/autoopen quest - Toggle auto opening of quest items. (diabled by default)")
   end
-  
 end
 
 --[[
@@ -103,19 +107,25 @@ end
 --[[
   BAG UPDATE & CORE FUNCTIONALITY
 ]]
+
 function E:BAG_UPDATE(B)
   if A.stopAddon then return end
   if not A.loaded then return end
-  if CastingInfo() then return end
+  if CastingInfo() then 
+    C_Timer.After(3.2, function()
+      local B = B
+      E:BAG_UPDATE(B)
+    end)
+  end
 
 
   --for B = 0, NUM_BAG_SLOTS do
     for S = 1, GetContainerNumSlots(B) do
       local _, _, locked, _, _, lootable, itemLink = GetContainerItemInfo(B, S)
-
+      local isQuestItem = GetContainerItemQuestInfo(B, S)
       local itemName = itemLink and string.match(itemLink, "%[(.*)%]") or nil
 
-      if lootable and not locked and not string.find(itemLink:lower(), "lockbox") and not string.find(itemLink, "Junkbox") and not AOBL[itemName] then -- make sure its not a lockbox
+      if lootable and not locked and not string.find(itemLink:lower(), "lockbox") and not string.find(itemLink, "Junkbox") and not AOBL[itemName] and (not isQuestItem and AutoOpenQuestItems) then -- make sure its not a lockbox
         local autolootDefault = GetCVar("autoLootDefault")
 
         if autolootDefault then -- autolooting

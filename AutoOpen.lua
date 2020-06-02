@@ -14,6 +14,11 @@ A.slashPrefix = "|cff8d63ff/autoopen|r "
 A.addonName = "|cff8d63ffAutoOpen|r "
 
 
+CreateFrame('GameTooltip', 'AutoOpenTooltip', nil, 'GameTooltipTemplate')
+AutoOpenTooltip:SetOwner(UIParent, 'ANCHOR_NONE')
+AutoOpenTooltip:ClearLines()
+  
+
 local E = CreateFrame("Frame")
 E:RegisterEvent("PLAYER_ENTERING_WORLD")
 E:RegisterEvent("ADDON_LOADED")
@@ -108,9 +113,16 @@ end
   BAG UPDATE & CORE FUNCTIONALITY
 ]]
 
-function A:IsQuestItem(itemLink)
-  local id, subid = select(12, GetItemInfo(itemLink))
-  return (id == LE_ITEM_CLASS_QUESTITEM or subid == LE_ITEM_CLASS_QUESTITEM)
+function A:IsQuestItem(B,S)
+  AutoOpenTooltip:ClearLines()
+  for i = 1, AutoOpenTooltip:NumLines() do
+    local text = _G["AutoOpenTooltipTextLeft"..i]:GetText()
+
+    if string.find(text:lower(), "quest item") then
+      return true
+    end
+  end
+  return false
 end
 
 function E:BAG_UPDATE(B)
@@ -129,7 +141,12 @@ function E:BAG_UPDATE(B)
       local _, _, locked, _, _, lootable, itemLink = GetContainerItemInfo(B, S)
       local itemName = itemLink and string.match(itemLink, "%[(.*)%]") or nil
 
-      if lootable and not locked and not string.find(itemLink:lower(), "lockbox") and not string.find(itemLink, "Junkbox") and not AOBL[itemName] and (not A:IsQuestItem(itemLink) and AutoOpenQuestItems) then -- make sure its not a lockbox
+      if lootable and not locked and not string.find(itemLink:lower(), "lockbox") and not string.find(itemLink, "Junkbox") and not AOBL[itemName] then -- make sure its not a lockbox
+
+        if A:IsQuestItem(B,S) and not AutoOpenQuestItems then
+          return
+        end
+
         local autolootDefault = GetCVar("autoLootDefault")
 
         if autolootDefault then -- autolooting

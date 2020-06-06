@@ -17,7 +17,7 @@ A.addonName = "|cff8d63ffAutoOpen|r "
 CreateFrame('GameTooltip', 'AutoOpenTooltip', nil, 'GameTooltipTemplate')
 AutoOpenTooltip:SetOwner(UIParent, 'ANCHOR_NONE')
 AutoOpenTooltip:ClearLines()
-  
+
 
 local E = CreateFrame("Frame")
 E:RegisterEvent("PLAYER_ENTERING_WORLD")
@@ -78,6 +78,7 @@ function A:SlashCommand(args)
 
   elseif command == "quest" then
     AutoOpenQuestItems = not AutoOpenQuestItems
+    if AutoOpenQuestItems then A:Print("Auto opening quest items.") else A:Print("Not auto opening quest items.") end
 
   else
     A:Print("Commands")
@@ -115,6 +116,7 @@ end
 
 function A:IsQuestItem(B,S)
   AutoOpenTooltip:ClearLines()
+  AutoOpenTooltip:SetBagItem(B, S)
   for i = 1, AutoOpenTooltip:NumLines() do
     local text = _G["AutoOpenTooltipTextLeft"..i]:GetText()
 
